@@ -5,9 +5,12 @@ from rest_framework import generics
 from rest_framework import status
 from rest_framework import viewsets
 from django.contrib.auth import authenticate
+from rest_framework.authentication import BasicAuthentication
+from django.contrib.auth.models import User
 
 from . models import Poll, Choice
-from . serializers import PollSerializer, ChoiceSerializer, VoteSerializer, UserSerializer
+from . serializers import PollSerializer, ChoiceSerializer, VoteSerializer, UserSerializer, UserListSerializer
+from . permissions import CreateChoice
 
 
 # class PollList(APIView):
@@ -50,6 +53,8 @@ class ChoiceList(generics.ListCreateAPIView):
         queryset = Choice.objects.filter(poll_id=self.kwargs['pk'])
         return queryset
     serializer_class = ChoiceSerializer
+    authentication_classes = ()
+    permission_classes = [CreateChoice]
 
 
 # class CreateVote(generics.CreateAPIView):
@@ -87,3 +92,10 @@ class LoginView(APIView):
             return Response({"token": user.auth_token.key})
         else:
             return Response({"error": "Wrong Credentials"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserList(generics.ListAPIView):
+    serializer_class = UserListSerializer
+    queryset = User.objects.all()[:10]
+    authentication_classes = ()
+    permission_classes = ()

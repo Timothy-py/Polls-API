@@ -24,7 +24,8 @@ class PollSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Poll
-        fields = "__all__"
+        # fields = "__all__"
+        fields = ("question", "pub_date", "choices", "created_by")
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -36,11 +37,20 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User(
-            email = validated_data['email'],
-            username = validated_data['username']
+            email=validated_data['email'],
+            username=validated_data['username']
         )
         user.set_password(validated_data['password'])
         user.save()
         Token.objects.create(user=user)
 
         return user
+
+
+class UserListSerializer(serializers.Serializer):
+    # def update(self, instance, validated_data):
+    #     pass
+
+    id = serializers.IntegerField()
+    email = serializers.EmailField()
+    username = serializers.CharField(max_length=200)

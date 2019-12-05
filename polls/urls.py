@@ -26,6 +26,7 @@ urlpatterns = [
     path('login', apiviews.LoginView.as_view(), name="login"),
     # or
     # path('login', rest_views.obtain_auth_token, name="login"),
+    path('list_users', apiviews.UserList.as_view(), name="user_list"),
 ]
 
 urlpatterns += router.urls
