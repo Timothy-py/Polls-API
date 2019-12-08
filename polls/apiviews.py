@@ -48,12 +48,21 @@ class PollViewSet(viewsets.ModelViewSet):
 #     queryset = Choice.objects.all()
 #     serializer_class = ChoiceSerializer
 
+
 class ChoiceList(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = Choice.objects.filter(poll_id=self.kwargs['pk'])
         return queryset
+
+    def post(self, request, *pk):
+
+        if request.user == (Poll.objects.get(id=pk)).created_by:
+            return self.create(request)
+        else:
+            return Response(status.HTTP_401_UNAUTHORIZED)
+
     serializer_class = ChoiceSerializer
-    authentication_classes = ()
+    # authentication_classes = ()
     permission_classes = [CreateChoice]
 
 
