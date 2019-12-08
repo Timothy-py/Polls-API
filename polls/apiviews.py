@@ -43,6 +43,18 @@ class PollViewSet(viewsets.ModelViewSet):
     queryset = Poll.objects.all()
     serializer_class = PollSerializer
 
+    def destroy(self, request, pk=None):
+        if request.user == (Poll.objects.get(id=pk)).created_by:
+
+            instance = self.get_object()
+            if instance:
+                instance.delete()
+                return Response(status.HTTP_410_GONE)
+            else:
+                return Response(status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status.HTTP_401_UNAUTHORIZED)
+
 
 # class ChoiceList(generics.ListCreateAPIView):
 #     queryset = Choice.objects.all()
