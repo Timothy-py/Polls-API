@@ -4,8 +4,9 @@ from . import views
 from . import apiviews
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views as rest_views
-from rest_framework_swagger.views import get_swagger_view
-
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework import permissions
 
 app_name = 'Polls'
 
@@ -16,7 +17,17 @@ app_name = 'Polls'
 
 router = DefaultRouter()
 router.register('polls', apiviews.PollViewSet, base_name='polls')
-schema_view = get_swagger_view(title='Polls API')
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Polls API",
+        default_version='v1',
+        description='A simple API for django polls project',
+        contact=openapi.Contact(email="adeyeyetimothy33@gmail.com"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 urlpatterns = [
     # path('polls/', apiviews.PollList.as_view(), name="polls_list"),
@@ -30,7 +41,7 @@ urlpatterns = [
     # or
     # path('login', rest_views.obtain_auth_token, name="login"),
     path('list_users', apiviews.UserList.as_view(), name="user_list"),
-    path('swagger-docs', schema_view),
+    path('swagger-docs', schema_view.with_ui('swagger', cache_timeout=0)),
 ]
 
 urlpatterns += router.urls
