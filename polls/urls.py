@@ -4,6 +4,8 @@ from . import views
 from . import apiviews
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views as rest_views
+from rest_framework_swagger.views import get_swagger_view
+
 
 app_name = 'Polls'
 
@@ -14,6 +16,7 @@ app_name = 'Polls'
 
 router = DefaultRouter()
 router.register('polls', apiviews.PollViewSet, base_name='polls')
+schema_view = get_swagger_view(title='Polls API')
 
 urlpatterns = [
     # path('polls/', apiviews.PollList.as_view(), name="polls_list"),
@@ -27,6 +30,8 @@ urlpatterns = [
     # or
     # path('login', rest_views.obtain_auth_token, name="login"),
     path('list_users', apiviews.UserList.as_view(), name="user_list"),
+    path('swagger-docs', schema_view),
 ]
 
 urlpatterns += router.urls
+
